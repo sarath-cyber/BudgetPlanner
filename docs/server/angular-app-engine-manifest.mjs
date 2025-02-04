@@ -1,6 +1,6 @@
 
 export default {
-  basePath: '.',
+  basePath: '/BudgetPlanner',
   supportedLocales: {
   "en-US": ""
 },
