@@ -1,70 +1,82 @@
 <div class="container">
-    <div class="header">
-      <button class="clear-btn" (click)="showClearConfirmation()">Clear Data</button>
-    </div>
-    <div class="left-section">
-      <h1 class="center-heading">Budget Planner</h1>
-  
-      <div class="input-section">
+  <div class="header">
+    <button class="clear-btn" (click)="showClearConfirmation()">Clear Data</button>
+  </div>
+
+  <div class="left-section">
+    <h1 class="center-heading">Budget Planner</h1>
+
+    <div class="input-section">
+      <div class="input-group">
         <label for="expenseDate">Date:</label>
         <input type="date" id="expenseDate" [(ngModel)]="expense.date" class="small-input">
-  
+      </div>
+
+      <div class="input-group">
         <label for="expenseType">Expense Type:</label>
         <select id="expenseType" [(ngModel)]="expense.type" class="small-input">
           <option *ngFor="let type of expenseTypes" [value]="type.name">{{ type.name }}</option>
         </select>
-  
+      </div>
+
+      <div class="input-group">
         <label for="expenseAmount">Amount:</label>
         <input type="number" id="expenseAmount" [(ngModel)]="expense.amount" class="small-input">
       </div>
-  
-      <button class="small-btn center-btn" (click)="addExpense()">Add Expense</button>
-  
-      <div class="total-expense">
-        <h2 class="center-heading">Total Expense: ₹{{ totalExpense.toFixed(2) }}</h2>
-      </div>
-  
-      <button class="small-btn center-btn" (click)="downloadExcel()">Download as Excel</button>
-    </div>
-  
-    <div class="right-section">
-      <h2 class="center-heading">Expense History</h2>
-      <div class="history-input">
-        <label for="historyDate">Select Date:</label>
-        <input type="date" id="historyDate" [(ngModel)]="searchDate" class="small-input">
-        <button class="small-btn" (click)="fetchHistory()">Fetch</button>
-      </div>
-  
-      <div class="history-box">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Amount (INR)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let exp of filteredExpenses">
-              <td>{{ exp.date }}</td>
-              <td>{{ exp.type }}</td>
-              <td>{{ exp.amount | currency: 'INR' }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
-    <!-- Confirmation Popup -->
-    <div *ngIf="showPopup" class="popup-overlay">
-      <div class="popup-content">
-        <h3>Confirm Data Deletion</h3>
-        <p>Enter the Secret Key to clear the data:</p>
-        <input type="text" [(ngModel)]="confirmationText" class="small-input" placeholder="Type here...">
-        <div class="popup-actions">
-          <button class="small-btn" (click)="confirmClearData()">Confirm</button>
-          <button class="small-btn" (click)="cancelClear()">Cancel</button>
-        </div>
+    <button class="small-btn center-btn" (click)="addExpense()">Add Expense</button>
+
+    <div class="total-expense">
+      <h2 class="center-heading">Total Expense: ₹{{ totalExpense.toFixed(2) }}</h2>
+    </div>
+
+    <button class="small-btn center-btn" (click)="downloadExcel()">Download as Excel</button>
+  </div>
+
+  <div class="right-section">
+    <h2 class="center-heading">Expense History</h2>
+
+    <div class="history-input">
+      <label for="fromDate">From:</label>
+      <input type="date" id="fromDate" [(ngModel)]="fromDate" class="small-input">
+
+      <label for="toDate">To:</label>
+      <input type="date" id="toDate" [(ngModel)]="toDate" class="small-input">
+
+      <button class="small-btn fetch-btn" (click)="fetchHistory()">Fetch</button>
+    </div>
+
+    <div class="history-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount (INR)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let exp of filteredExpenses">
+            <td>{{ exp.date }}</td>
+            <td>{{ exp.type }}</td>
+            <td>{{ exp.amount | currency: 'INR' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Confirmation Popup -->
+  <div *ngIf="showPopup" class="popup-overlay">
+    <div class="popup-content">
+      <h3>Confirm Data Deletion</h3>
+      <p>Enter the Secret Key to clear the data:</p>
+      <input type="text" [(ngModel)]="confirmationText" class="small-input" placeholder="Type here...">
+      <div class="popup-actions">
+        <button class="small-btn" (click)="confirmClearData()">Confirm</button>
+        <button class="small-btn" (click)="cancelClear()">Cancel</button>
       </div>
     </div>
   </div>
+</div>

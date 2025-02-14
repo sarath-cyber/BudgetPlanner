@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 interface Expense {
   date: string;
   type: string;
-  amount: number;
+  amount: number | null;
 }
 
 @Component({
@@ -17,7 +17,7 @@ interface Expense {
   styleUrls: ['./budget-planner.component.css'],
 })
 export class BudgetPlannerComponent {
-  expense: Expense = { date: '', type: '', amount: 0 };
+  expense: Expense = { date: '', type: '', amount: null};
   searchDate: string = '';
   filteredExpenses: Expense[] = [];
   expenses: Expense[] = [];
@@ -25,12 +25,18 @@ export class BudgetPlannerComponent {
   currentMonth: string = '';
   showPopup = false;
   confirmationText = '';
-
+  fromDate: string = '';
+  toDate: string = '';
   expenseTypes = [
     { name: 'Food', icon: 'assets/food.png' },
     { name: 'Bills', icon: 'assets/bills.png' },
     { name: 'Groceries', icon: 'assets/groceries.png' },
     { name: 'Entertainment', icon: 'assets/entertainment.png' },
+    { name: 'Transportation' },
+    { name: 'Rents & EMI' },
+    { name: 'shopping' },
+    { name: 'miscellaneous' },
+    { name: 'Fuel' }
   ];
 
   constructor() {
@@ -38,22 +44,25 @@ export class BudgetPlannerComponent {
   }
 
   addExpense() {
-    if (!this.expense.date || !this.expense.type || this.expense.amount <= 0) return;
-
+    if (!this.expense.date || !this.expense.type || this.expense.amount == null || this.expense.amount <= 0) return;
+  
     const selectedMonth = new Date(this.expense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
-
+  
     if (this.currentMonth && this.currentMonth !== selectedMonth) {
       this.totalExpense = 0; // Reset total if month changes
       this.currentMonth = selectedMonth;
     }
-
+  
     this.currentMonth = selectedMonth;
-
+  
     this.expenses.push({ ...this.expense });
     this.totalExpense += this.expense.amount;
-
+  
     this.saveExpenses();
-    this.expense = { date: '', type: '', amount: 0 };
+  
+    // Reset only type and amount, keeping the date
+    this.expense.type = '';
+    this.expense.amount = null;
   }
 
   saveExpenses() {
@@ -75,16 +84,22 @@ export class BudgetPlannerComponent {
     }
   }
 
-  fetchHistory(): void {
-    if (!this.searchDate) {
-      alert('Please select a date');
+  fetchHistory() {
+    if (!this.fromDate || !this.toDate) {
+      alert("Please select both From and To dates.");
       return;
     }
 
-    this.filteredExpenses = this.expenses.filter(exp => exp.date === this.searchDate);
+    const from = new Date(this.fromDate).getTime();
+    const to = new Date(this.toDate).getTime();
+
+    this.filteredExpenses = this.expenses.filter(exp => {
+      const expDate = new Date(exp.date).getTime();
+      return expDate >= from && expDate <= to;
+    });
 
     if (this.filteredExpenses.length === 0) {
-      alert('No records found for the selected date.');
+      alert("No expenses found in this date range.");
     }
   }
 
