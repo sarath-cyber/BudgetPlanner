@@ -14,7 +14,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: grey;
+  background-color: whitesmoke;
 }
 
 /* Header */
@@ -26,7 +26,7 @@ body {
 }
 
 .clear-btn {
-  background-color: green;
+  background-color: lightblue;
   color: white;
   padding: 10px 10px;
   border: none;
@@ -51,20 +51,25 @@ body {
   max-width: 45%;
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 0 10px blueviolet;
+  border-color: blueviolet;
 }
 
 /* Input Section */
 .input-section {
   display: flex;
   flex-direction: column;
+  border-radius: 20px;
+  font-family: Arial, Helvetica, sans-serif
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+  border-radius: 20px
+  ;
 }
 
 label {
@@ -83,7 +88,7 @@ label {
 .small-btn {
   padding: 4px;
   font-size: 16px;
-  background-color: green;
+  background-color: lightblue;
   color: white;
   border: none;
   cursor: pointer;
@@ -107,8 +112,8 @@ label {
   max-width: 45%;
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 0 10px blueviolet
 }
 
 .history-input {
@@ -163,7 +168,7 @@ th {
 }
  /* Style buttons */
  .btn {
-  background-color: green;
+  background-color: lightblue;
   border: black;
   color: white;
   padding: 8px 20px;
@@ -171,7 +176,15 @@ th {
   font-size: 20px;
   border-radius: 20px;
 }
-
+.btn-icon {
+  background-color: blueviolet;
+  border: black;
+  color: white;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 20px;
+}
 /* Darker background on mouse-over */
 .btn:hover {
   background-color: RoyalBlue;

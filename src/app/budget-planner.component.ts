@@ -6,7 +6,8 @@ import * as XLSX from 'xlsx';
 interface Expense {
   date: string;
   type: string;
-  amount: number | null;
+  amount: number;
+  comments?: string; // New optional comments field
 }
 
 @Component({
@@ -17,7 +18,7 @@ interface Expense {
   styleUrls: ['./budget-planner.component.css'],
 })
 export class BudgetPlannerComponent {
-  expense: Expense = { date: '', type: '', amount: null};
+  expense: Expense = { date: '', type: '', amount: 0, comments: '' };
   searchDate: string = '';
   filteredExpenses: Expense[] = [];
   expenses: Expense[] = [];
@@ -27,6 +28,7 @@ export class BudgetPlannerComponent {
   confirmationText = '';
   fromDate: string = '';
   toDate: string = '';
+
   expenseTypes = [
     { name: 'Food', icon: 'assets/food.png' },
     { name: 'Bills', icon: 'assets/bills.png' },
@@ -34,8 +36,8 @@ export class BudgetPlannerComponent {
     { name: 'Entertainment', icon: 'assets/entertainment.png' },
     { name: 'Transportation' },
     { name: 'Rents & EMI' },
-    { name: 'shopping' },
-    { name: 'miscellaneous' },
+    { name: 'Shopping' },
+    { name: 'Miscellaneous' },
     { name: 'Fuel' }
   ];
 
@@ -44,25 +46,26 @@ export class BudgetPlannerComponent {
   }
 
   addExpense() {
-    if (!this.expense.date || !this.expense.type || this.expense.amount == null || this.expense.amount <= 0) return;
-  
+    if (!this.expense.date || !this.expense.type || this.expense.amount <= 0) return;
+
     const selectedMonth = new Date(this.expense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
-  
+
     if (this.currentMonth && this.currentMonth !== selectedMonth) {
       this.totalExpense = 0; // Reset total if month changes
       this.currentMonth = selectedMonth;
     }
-  
+
     this.currentMonth = selectedMonth;
-  
+
     this.expenses.push({ ...this.expense });
+
     this.totalExpense += this.expense.amount;
-  
     this.saveExpenses();
-  
-    // Reset only type and amount, keeping the date
+
+    // Reset only type, amount, and comments, keeping the date
     this.expense.type = '';
-    this.expense.amount = null;
+    this.expense.amount = 0;
+    this.expense.comments = '';
   }
 
   saveExpenses() {
@@ -109,9 +112,11 @@ export class BudgetPlannerComponent {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Expenses');
     XLSX.writeFile(workbook, 'Budget-Planner.xlsx');
   }
+
   showClearConfirmation() {
     this.showPopup = true;
   }
+
   confirmClearData() {
     if (this.confirmationText === 'CONFIRM DELETE') {
       localStorage.clear();
@@ -122,6 +127,7 @@ export class BudgetPlannerComponent {
       alert('Incorrect confirmation text. Please type "CONFIRM DELETE".');
     }
   }
+
   cancelClear() {
     this.showPopup = false;
     this.confirmationText = '';
