@@ -1,167 +1,213 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: black
+}
+
+/* Container */
 .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 40px;
-    gap: 20px;
-    position: relative;
-  }
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: grey;
+}
 
-  .header {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
+/* Header */
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
 
-  .clear-btn {
-    padding: 2px 6px;
-    border: 1px solid black;
-    border-radius: 12px;
-    background-color: #dc3545;
-    color: white;
-    font-size: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
+.clear-btn {
+  background-color: green;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 20px;
+}
+.clear-btn:hover{
+  background-color: royalblue;
+}
+/* Content Section */
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  .clear-btn:hover {
-    background-color: #c82333;
+/* Left Section */
+.left-section {
+  flex: 1;
+  max-width: 45%;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.small-input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.small-btn {
+  padding: 4px;
+  font-size: 16px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  border: #f2f2f2;
+  border-radius: 20px;
+}
+
+.center-btn {
+  margin: 10px 0;
+}
+
+.fetch-btn {
+  margin-left: 10px;
+}
+
+/* Right Section (Expense History) */
+.right-section {
+  flex: 1;
+  max-width: 45%;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.history-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.date-group {
+  margin-right: 10px;
+}
+
+/* Table */
+.history-box {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+ /* Style buttons */
+ .btn {
+  background-color: green;
+  border: black;
+  color: white;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 20px;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+.popup-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+.small-btn:hover{
+  background-color: royalblue;
+}
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
   }
 
   .left-section, .right-section {
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 48%;
-    position: relative;
-  }
-
-  .center-heading {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .input-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .input-section label {
-    font-weight: bold;
-  }
-
-  .small-input {
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 100%;
-    font-size: 12px;
-  }
-
-  .small-btn {
-    width: 50%;
-    padding: 4px 8px;
-    border: 1px solid black;
-    border-radius: 8px;
-    background-color: #28a745;
-    color: white;
-    font-size: 12px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .small-btn:hover {
-    background-color: #218838;
-  }
-
-  .total-expense h2 {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 18px;
-    font-weight: bold;
+    max-width: 90%;
+    margin-bottom: 20px;
   }
 
   .history-input {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .history-input input {
-    flex: 1;
-    padding: 4px;
-    border-radius: 8px;
-  }
-
-  .history-box table {
+  .date-group {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
-  .history-box th, .history-box td {
-    border: 1px solid #ddd;
-    padding: 4px;
-    text-align: left;
+  .fetch-btn {
+    width: 80%;
   }
-
-  .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 300px;
-  }
-
-  .popup-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-    }
-    .left-section, .right-section {
-      width: 100%;
-    }
-    .small-input {
-      width: 10px; /* Adjust width as needed */
-      padding: 5px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
-    }
-    
-    select.small-input {
-      width: 190px; /* Slightly wider for select box */
-    }
-    
-  }
+ 
+}
