@@ -25,7 +25,7 @@ export class BudgetPlannerComponent {
   toDate: string = '';
 
 
-  
+
   expenseTypes = [
     { name: 'Food', icon: 'assets/food.png' },
     { name: 'Bills', icon: 'assets/bills.png' },
