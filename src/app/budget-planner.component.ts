@@ -2,20 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
-
-interface Expense {
-  date: string;
-  type: string;
-  amount: number;
-  comments?: string; // New optional comments field
-}
+import { FirestoreService } from './firestore.service';
+import { Expense } from './expense.model';
 
 @Component({
   selector: 'app-budget-planner',
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './budget-planner.component.html',
-  styleUrls: ['./budget-planner.component.css'],
+  styleUrls: ['./budget-planner.component.css']
 })
 export class BudgetPlannerComponent {
   expense: Expense = { date: '', type: '', amount: 0, comments: '' };
@@ -41,7 +36,7 @@ export class BudgetPlannerComponent {
     { name: 'Fuel' }
   ];
 
-  constructor() {
+  constructor(private firestoreService: FirestoreService) {
     this.loadExpenses();
   }
 
@@ -51,40 +46,37 @@ export class BudgetPlannerComponent {
     const selectedMonth = new Date(this.expense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
 
     if (this.currentMonth && this.currentMonth !== selectedMonth) {
-      this.totalExpense = 0; // Reset total if month changes
+      this.totalExpense = 0;
       this.currentMonth = selectedMonth;
     }
 
     this.currentMonth = selectedMonth;
 
-    this.expenses.push({ ...this.expense });
-
-    this.totalExpense += this.expense.amount;
-    this.saveExpenses();
-
-    // Reset only type, amount, and comments, keeping the date
-    this.expense.type = '';
-    this.expense.amount = 0;
-    this.expense.comments = '';
+    // Save to Firestore
+    this.firestoreService.addExpense({ ...this.expense }).then(() => {
+      this.expenses.push({ ...this.expense });
+      this.totalExpense += this.expense.amount;
+      // Reset only type, amount, and comments, keeping the date
+      this.expense.type = '';
+      this.expense.amount = 0;
+      this.expense.comments = '';
+    });
   }
 
   saveExpenses() {
-    localStorage.setItem('expenses', JSON.stringify(this.expenses));
-    localStorage.setItem('currentMonth', this.currentMonth);
-    localStorage.setItem('totalExpense', this.totalExpense.toString());
+    // No longer needed, handled by Firestore
   }
 
   loadExpenses() {
-    if (typeof window !== 'undefined' && localStorage) {
-      const storedExpenses = localStorage.getItem('expenses');
-      this.expenses = storedExpenses ? JSON.parse(storedExpenses) : [];
-
-      this.currentMonth = localStorage.getItem('currentMonth') || '';
-      this.totalExpense = parseFloat(localStorage.getItem('totalExpense') || '0');
-    } else {
-      this.expenses = [];
-      this.totalExpense = 0;
-    }
+    this.firestoreService.getExpenses().then((expenses: Expense[]) => {
+      this.expenses = expenses;
+      // Optionally, update totalExpense and currentMonth
+      this.totalExpense = expenses.reduce((sum: number, exp: Expense) => sum + exp.amount, 0);
+      if (expenses.length > 0) {
+        const lastExpense: Expense = expenses[expenses.length - 1];
+        this.currentMonth = new Date(lastExpense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
+      }
+    });
   }
 
   fetchHistory() {
@@ -93,24 +85,12 @@ export class BudgetPlannerComponent {
       return;
     }
 
-    const from = new Date(this.fromDate).getTime();
-    const to = new Date(this.toDate).getTime();
-
-    this.filteredExpenses = this.expenses.filter(exp => {
-      const expDate = new Date(exp.date).getTime();
-      return expDate >= from && expDate <= to;
+    this.firestoreService.getExpensesByDateRange(this.fromDate, this.toDate).then((filtered: Expense[]) => {
+      this.filteredExpenses = filtered;
+      if (this.filteredExpenses.length === 0) {
+        alert("No expenses found in this date range.");
+      }
     });
-
-    if (this.filteredExpenses.length === 0) {
-      alert("No expenses found in this date range.");
-    }
-  }
-
-  downloadExcel(): void {
-    const worksheet = XLSX.utils.json_to_sheet(this.expenses);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Expenses');
-    XLSX.writeFile(workbook, 'Budget-Planner.xlsx');
   }
 
   showClearConfirmation() {
@@ -119,10 +99,14 @@ export class BudgetPlannerComponent {
 
   confirmClearData() {
     if (this.confirmationText === 'CONFIRM DELETE') {
-      localStorage.clear();
-      alert('Data cleared successfully!');
-      this.showPopup = false;
-      this.confirmationText = '';
+      this.firestoreService.clearAllExpenses().then(() => {
+        alert('Data cleared successfully!');
+        this.expenses = [];
+        this.totalExpense = 0;
+        this.currentMonth = '';
+        this.showPopup = false;
+        this.confirmationText = '';
+      });
     } else {
       alert('Incorrect confirmation text. Please type "CONFIRM DELETE".');
     }
@@ -132,4 +116,12 @@ export class BudgetPlannerComponent {
     this.showPopup = false;
     this.confirmationText = '';
   }
+
+  downloadExcel(): void {
+    const worksheet = XLSX.utils.json_to_sheet(this.expenses);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Expenses');
+    XLSX.writeFile(workbook, 'Budget-Planner.xlsx');
+  }
 }
+
